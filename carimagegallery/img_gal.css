@@ -1,0 +1,39 @@
+*{
+    padding:0px;
+    margin:0px;
+}
+body{
+    background-color:rgb(245, 245, 245);
+    background-size:cover;
+    height:100vh;
+}
+h1{
+    font-family: "Roboto";
+    color:blueviolet;
+    text-align:center;
+    padding:40px;
+}
+img{
+    height:250px;
+    width:250px;
+}
+.container{
+    display:flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+}
+p{
+
+}
+.card{
+    border-radius:5px;
+    width:250px;
+    background-color: rgb(255, 255, 255);
+    margin:20px;
+    padding:10px;
+    display:inline-block;
+    flex-wrap:wrap;
+}
+hr{
+    padding:20px;
+}
