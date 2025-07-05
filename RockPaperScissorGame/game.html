@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rock-Paper-Scissor</title>
+</head>
+<body>
+    <style>
+        button{
+            width:100px;
+            height:100px;
+            font-size:60px;
+            border-radius:50%;
+            margin:25px;
+            background-color: rgb(0, 0, 0);
+            transition: transform 1s ease-in;
+        }
+        button:hover{
+            background-color: rgb(48, 47, 47);
+            transform: scale(1.05);
+        }
+        .choice{
+            display:flex;
+            justify-content: center;
+            align-items: center;
+            margin-top:12vh;
+        }
+        h1{
+            text-align:center;
+            margin-top:100px;
+        }
+        #display{
+            text-align:center;
+            margin-top:15px;
+        }
+        p{
+            text-align:center;
+            margin-top:5px;
+        }
+        h4{
+            text-align: center;
+        }
+        .green, #plr-scr{
+            color:green;
+        }
+        .red, #cmpr-scr{
+            color:red;
+        }
+        p,span{
+            font-size:22px;
+        }
+        .score-box{
+            background:linear-gradient(to right,rgb(245, 100, 245),rgb(234, 204, 238));
+            max-width:200px;
+            margin:auto;
+            padding:10px;
+            border-radius: 15px;
+            color:aliceblue;
+            font-size: 24px;
+        }
+    </style>
+    <h1>ROCK - PAPER - SCISSOR</h1>
+    <div class="choice">
+        <button onclick="playerinput('rock')">👊</button>
+        <button onclick="playerinput('scissor')">✌️</button>
+        <button onclick="playerinput('paper')">🖐️</button>
+    </div>
+    <h4 id="player">Player Choice:</h4>
+    <h4 id="computer">Computer Choice:</h4>
+    <h1 id="display"></h1>
+    <div class="score-box">
+        <p>Player Score:   <span id="plr-scr">0</span></p>
+        <p>Computer Score: <span id="cmpr-scr">0</span></p>
+    </div>
+    <script>
+        const choice=["rock","paper","scissor"];
+        let playerscore=0;
+        let computerscore=0;
+        function playerinput(input){
+            let ind=Math.floor(Math.random() *3);
+            let compchoice=choice[ind];
+            let result="";
+            if(choice[ind]===input){
+                result="It's A TIE";
+            }
+            else{
+                switch(input){
+                    case "rock":
+                        result=(compchoice ==="scissors")?"YOU WIN!":"YOU LOSE!";
+                        break;
+                    case "paper":
+                        result=(compchoice ==="rock")?"YOU WIN!":"YOU LOSE!";
+                        break;
+                    case "scissor":
+                        result=(compchoice ==="paper")?"YOU WIN!":"YOU LOSE!";
+                        break;
+                }
+            }
+            document.getElementById("display").classList.remove("green","red");
+            if(result === "YOU WIN!"){
+                document.getElementById("display").classList.add("green");
+                playerscore++;
+            }
+            else if(result === "YOU LOSE!"){
+                document.getElementById("display").classList.add("red");
+                computerscore++;
+            }
+            document.getElementById("player").textContent=`PLAYER: ${input}`;
+            document.getElementById("computer").textContent=`COMPUTER: ${compchoice}`;
+            document.getElementById("display").textContent=`${result}`;
+            document.getElementById("plr-scr").textContent=`${playerscore}`;
+            document.getElementById("cmpr-scr").textContent=`${computerscore}`;
+        }
+    </script>
+</body>
+</html>
