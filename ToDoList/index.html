@@ -26,8 +26,6 @@
             padding: 25px;
             border-radius: 12px;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-
-            /* 🌈 Animated Background */
             background: linear-gradient(-45deg, #ff9a9e, #fad0c4, #a18cd1, #fbc2eb, #a1c4fd);
             background-size: 400% 400%;
             animation: animatedCardBG 10s ease infinite;
@@ -123,9 +121,19 @@
             transition: color 0.3s ease;
         }
 
-        .checked {
-            text-decoration: line-through;
-            color: green !important;
+        .completed {
+            color: green;
+            animation: greenGlow 2s infinite alternate;
+        }
+
+        @keyframes greenGlow {
+            from {
+                background-color: #d4edda;
+            }
+
+            to {
+                background-color: #b9f6ca;
+            }
         }
 
         .actions {
@@ -206,7 +214,7 @@
 
 <body>
     <div class="container">
-        <h1>📝 Responsive To-Do List</h1>
+        <h1>📝To-Do List</h1>
         <div class="row">
             <div class="line1">
                 <input type="text" id="gettask" placeholder="Enter a task..." />
@@ -229,7 +237,6 @@
     </div>
 
     <script>
-        // Generate hour and minute options dynamically
         const hourSel = document.getElementById("hour");
         const minuteSel = document.getElementById("minute");
         for (let i = 1; i <= 12; i++) {
@@ -274,18 +281,23 @@
             const actions = document.createElement("div");
             actions.className = "actions";
 
-            const completeBtn = document.createElement("button");
-            completeBtn.textContent = "✅";
             completeBtn.onclick = () => {
-                taskElement.classList.toggle("checked");
-                if (taskElement.classList.contains("checked")) {
-                    taskElement.style.color = "green";
+                const isDone = list.classList.toggle("completed");
+
+                if (isDone) {
+                    taskElement.classList.remove("checked");
+                    taskElement.classList.add("completed");
+                    list.style.backgroundColor = "#d4edda";
+                    list.classList.add("green-bg");
                     clearInterval(timer);
                 } else {
-                    taskElement.style.color = "";
+                    taskElement.classList.remove("completed");
+                    list.classList.remove("green-bg");
+                    list.style.backgroundColor = "white";
                     checkDeadline(taskElement, time24, list);
                 }
             };
+
 
             const editBtn = document.createElement("button");
             editBtn.textContent = "✏️";
@@ -341,7 +353,7 @@
                 }
                 if (now >= deadline) {
                     taskElement.style.color = "red";
-                    list.style.backgroundColor = "#f8d7da"; // light red
+                    list.style.backgroundColor = "#f8d7da";
                     clearInterval(interval);
                 }
             }, 1000);
