@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Responsive To-Do List</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #f2f2f2;
+            display: flex;
+            justify-content: center;
+            align-items: start;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 550px;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+
+            /* 🌈 Animated Background */
+            background: linear-gradient(-45deg, #ff9a9e, #fad0c4, #a18cd1, #fbc2eb, #a1c4fd);
+            background-size: 400% 400%;
+            animation: animatedCardBG 10s ease infinite;
+        }
+
+        @keyframes animatedCardBG {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 1.6rem;
+            color: #333;
+        }
+
+        .row {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .line1 input {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+        }
+
+        .line2 {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .line2 select,
+        .line2 button {
+            padding: 10px;
+            border-radius: 6px;
+            border: 2px solid #ddd;
+            flex: 1 1 60px;
+            min-width: 60px;
+        }
+
+        .line2 button {
+            background-color: #5e60ce;
+            color: white;
+            border: none;
+            flex: 1 1 80px;
+            transition: transform 0.2s ease, background-color 0.3s ease;
+        }
+
+        .line2 button:hover {
+            background-color: #4d4dc3;
+            transform: scale(1.05);
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        li {
+            background: white;
+            margin-bottom: 10px;
+            padding: 10px;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            border-left: 4px solid #5e60ce;
+            border-radius: 6px;
+            opacity: 0;
+            transform: translateY(10px);
+            animation: slideFadeIn 0.4s ease forwards;
+        }
+
+        .task-text {
+            flex: 1 1 100%;
+            padding-right: 10px;
+            word-break: break-word;
+            transition: color 0.3s ease;
+        }
+
+        .checked {
+            text-decoration: line-through;
+            color: green !important;
+        }
+
+        .actions {
+            flex: 0 0 auto;
+            display: flex;
+            gap: 5px;
+        }
+
+        .actions button {
+            background: none;
+            border: none;
+            color: #5e60ce;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .actions button:hover {
+            color: #222;
+            transform: scale(1.2);
+        }
+
+        .deadline {
+            font-size: 13px;
+            color: #555;
+            margin-left: 5px;
+        }
+
+        .task-text[contenteditable="true"] {
+            background-color: #ede7f6;
+            outline: 2px dashed #5e60ce;
+            animation: pulse 0.6s infinite alternate;
+            border-radius: 4px;
+            padding: 2px;
+        }
+
+        @keyframes slideFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(15px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes pulse {
+            from {
+                box-shadow: 0 0 0px rgba(94, 96, 206, 0.4);
+            }
+
+            to {
+                box-shadow: 0 0 8px rgba(94, 96, 206, 0.8);
+            }
+        }
+
+        @media (max-width: 500px) {
+            .line2 {
+                flex-direction: row;
+                justify-content: space-between;
+            }
+
+            .actions {
+                justify-content: center;
+                width: 100%;
+                margin-top: 10px;
+            }
+
+            li {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>📝 Responsive To-Do List</h1>
+        <div class="row">
+            <div class="line1">
+                <input type="text" id="gettask" placeholder="Enter a task..." />
+            </div>
+            <div class="line2">
+                <select id="hour">
+                    <option disabled selected>HH</option>
+                </select>
+                <select id="minute">
+                    <option disabled selected>MM</option>
+                </select>
+                <select id="ampm">
+                    <option>AM</option>
+                    <option>PM</option>
+                </select>
+                <button onclick="add()">Add</button>
+            </div>
+        </div>
+        <ul id="list-box"></ul>
+    </div>
+
+    <script>
+        // Generate hour and minute options dynamically
+        const hourSel = document.getElementById("hour");
+        const minuteSel = document.getElementById("minute");
+        for (let i = 1; i <= 12; i++) {
+            const opt = document.createElement("option");
+            opt.value = i;
+            opt.textContent = i;
+            hourSel.appendChild(opt);
+        }
+        for (let i = 0; i < 60; i++) {
+            const opt = document.createElement("option");
+            opt.value = i.toString().padStart(2, "0");
+            opt.textContent = i.toString().padStart(2, "0");
+            minuteSel.appendChild(opt);
+        }
+
+        function add() {
+            const taskInput = document.getElementById("gettask");
+            const hour = document.getElementById("hour").value;
+            const minute = document.getElementById("minute").value;
+            const ampm = document.getElementById("ampm").value;
+            const task = taskInput.value.trim();
+
+            if (!task || hour === "HH" || minute === "MM") {
+                alert("Please fill out all fields!");
+                return;
+            }
+
+            const timeDisplay = `${hour}:${minute} ${ampm}`;
+            const time24 = convertTo24Hour(hour, minute, ampm);
+
+            const list = document.createElement("li");
+            list.classList.add("upcoming");
+
+            const taskElement = document.createElement("span");
+            taskElement.className = "task-text";
+            taskElement.textContent = task;
+
+            const timeLabel = document.createElement("span");
+            timeLabel.textContent = `⏰ ${timeDisplay}`;
+            timeLabel.className = "deadline";
+
+            const actions = document.createElement("div");
+            actions.className = "actions";
+
+            const completeBtn = document.createElement("button");
+            completeBtn.textContent = "✅";
+            completeBtn.onclick = () => {
+                taskElement.classList.toggle("checked");
+                if (taskElement.classList.contains("checked")) {
+                    taskElement.style.color = "green";
+                    clearInterval(timer);
+                } else {
+                    taskElement.style.color = "";
+                    checkDeadline(taskElement, time24, list);
+                }
+            };
+
+            const editBtn = document.createElement("button");
+            editBtn.textContent = "✏️";
+            editBtn.onclick = () => {
+                taskElement.contentEditable = true;
+                taskElement.focus();
+                taskElement.onblur = () => taskElement.contentEditable = false;
+            };
+
+            const deleteBtn = document.createElement("button");
+            deleteBtn.textContent = "❌";
+            deleteBtn.onclick = () => {
+                list.remove();
+                clearInterval(timer);
+            };
+
+            actions.appendChild(completeBtn);
+            actions.appendChild(editBtn);
+            actions.appendChild(deleteBtn);
+
+            list.appendChild(taskElement);
+            list.appendChild(timeLabel);
+            list.appendChild(actions);
+
+            document.getElementById("list-box").appendChild(list);
+
+            taskInput.value = "";
+            hourSel.value = "HH";
+            minuteSel.value = "MM";
+            document.getElementById("ampm").value = "AM";
+
+            const timer = checkDeadline(taskElement, time24, list);
+        }
+
+        function convertTo24Hour(hour, minute, ampm) {
+            hour = parseInt(hour);
+            minute = parseInt(minute);
+            if (ampm === "PM" && hour < 12) hour += 12;
+            if (ampm === "AM" && hour === 12) hour = 0;
+            return `${hour.toString().padStart(2, "0")}:${minute.toString().padStart(2, "0")}`;
+        }
+
+        function checkDeadline(taskElement, timeStr, list) {
+            const [hour, minute] = timeStr.split(":").map(Number);
+            const deadline = new Date();
+            deadline.setHours(hour, minute, 0, 0);
+
+            const interval = setInterval(() => {
+                const now = new Date();
+                if (taskElement.classList.contains("checked")) {
+                    clearInterval(interval);
+                    return;
+                }
+                if (now >= deadline) {
+                    taskElement.style.color = "red";
+                    list.style.backgroundColor = "#f8d7da"; // light red
+                    clearInterval(interval);
+                }
+            }, 1000);
+
+            return interval;
+        }
+    </script>
+</body>
+
+</html>
